@@ -11,6 +11,6 @@ import com.stautisabela.userauthenticationsystem.model.User;
 public interface UserRepository extends JpaRepository<User, String> {
 	
 	// example on how to create personalised queries
-	@Query("SELECT user FROM User WHERE user.userName =: userName")
+	@Query("SELECT user FROM User user WHERE user.userName =: userName")
 	User findByUsername(@Param("userName") String userName);
 }
