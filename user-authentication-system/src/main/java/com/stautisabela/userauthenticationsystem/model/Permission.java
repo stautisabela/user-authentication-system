@@ -3,12 +3,12 @@ package com.stautisabela.userauthenticationsystem.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -18,9 +18,8 @@ public class Permission implements GrantedAuthority, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(generator="uuid")
-	@GenericGenerator(name="uuid", strategy="uuid2")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Column
 	private String description;
@@ -28,11 +27,11 @@ public class Permission implements GrantedAuthority, Serializable {
 	public Permission() {
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
