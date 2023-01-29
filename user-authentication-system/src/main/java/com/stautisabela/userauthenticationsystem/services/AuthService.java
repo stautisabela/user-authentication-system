@@ -70,6 +70,7 @@ public class AuthService {
 		return ResponseEntity.ok(tokenResponse);
 	}
 	
+	
 	private boolean areParamsInvalid(AccountCredentialsVO data) {
 		return data == null || data.getUsername() == null || data.getUsername().isBlank() 
 				|| data.getPassword() == null || data.getPassword().isBlank();
