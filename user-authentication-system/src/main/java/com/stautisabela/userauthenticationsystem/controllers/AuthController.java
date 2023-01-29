@@ -21,45 +21,23 @@ public class AuthController {
 	@Autowired
 	AuthService service;
 	
-	// authenticates user credentials and returns token
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value="/signin")
 	public ResponseEntity signIn(@RequestBody AccountCredentialsVO data) {
-		
-		if (areParamsInvalid(data)) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid credentials.");
-		}
-		var token = service.signIn(data);
+		var token = service.signIn(data);;
 		if (token == null) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token generation.");
 		}
 		return token;
 	}
 	
-	// generates new access token for an existing refresh token
-		@SuppressWarnings("rawtypes")
-		@PutMapping(value="/refresh/{username}")
-		public ResponseEntity refreshToken(@PathVariable("username") String username, @RequestHeader("Authorization") String refreshToken) {
-			
-			if (areParamsInvalid(username, refreshToken)) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or token.");
-			}
-			var token = service.refreshToken(username, refreshToken);
-			if (token == null) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token generation.");
-			}
-			return token;
+	@SuppressWarnings("rawtypes")
+	@PutMapping(value="/refresh/{username}")
+	public ResponseEntity refreshToken(@PathVariable("username") String username, @RequestHeader("Authorization") String refreshToken) {
+		var token = service.refreshToken(username, refreshToken);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid token generation.");
 		}
-
-	// checks if username and password are null or blank
-	private boolean areParamsInvalid(AccountCredentialsVO data) {
-		return data == null || data.getUsername() == null || data.getUsername().isBlank() 
-				|| data.getPassword() == null || data.getPassword().isBlank();
+		return token;
 	}
-	
-	// checks if username and refresh token are null or blank
-		private boolean areParamsInvalid(String username, String refreshToken) {
-			return username == null || username.isBlank() || refreshToken == null || refreshToken.isBlank();
-		}
-	
 }

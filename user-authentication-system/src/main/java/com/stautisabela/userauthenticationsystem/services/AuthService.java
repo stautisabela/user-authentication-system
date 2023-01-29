@@ -1,6 +1,7 @@
 package com.stautisabela.userauthenticationsystem.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,9 +26,13 @@ public class AuthService {
 	@Autowired
 	private UserRepository repository;
 	
-	// receives credentials, authenticates them, retrieves the user with those credentials, and creates an access token for it
+	// authenticates user credentials, retrieves user with those credentials, and generates token for user
 	@SuppressWarnings("rawtypes")
 	public ResponseEntity signIn(AccountCredentialsVO data) {
+		if (areParamsInvalid(data)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid credentials.");
+		}
+		
 		try {
 			var username = data.getUsername();
 			var password = data.getPassword();
@@ -47,9 +52,13 @@ public class AuthService {
 		}
 	}
 	
-	// receives refresh token and generates new access token for the user
+	// generates new access token for an existing refresh token
 	@SuppressWarnings("rawtypes")
 	public ResponseEntity refreshToken(String username, String refreshToken) {
+		if (areParamsInvalid(username, refreshToken)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid username or token.");
+		}
+		
 		var user = repository.findByUsername(username);
 		var tokenResponse = new TokenVO();
 			
@@ -59,5 +68,14 @@ public class AuthService {
 			throw new UsernameNotFoundException("Username " + username + " not found.");
 		}
 		return ResponseEntity.ok(tokenResponse);
+	}
+	
+	private boolean areParamsInvalid(AccountCredentialsVO data) {
+		return data == null || data.getUsername() == null || data.getUsername().isBlank() 
+				|| data.getPassword() == null || data.getPassword().isBlank();
+	}
+		
+	private boolean areParamsInvalid(String username, String refreshToken) {
+		return username == null || username.isBlank() || refreshToken == null || refreshToken.isBlank();
 	}
 }
