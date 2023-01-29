@@ -8,7 +8,5 @@ public class UserAuthenticationSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UserAuthenticationSystemApplication.class, args);
-		
-		System.out.println("HIBERNATE VERSION: "+ org.hibernate.Version.getVersionString());
 	}
 }
